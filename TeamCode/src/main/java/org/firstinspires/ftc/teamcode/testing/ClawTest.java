@@ -32,7 +32,7 @@ import org.firstinspires.ftc.teamcode.util.values.HandPoints;
 public class ClawTest extends CommandOpMode {
 
     private final RobotHardware robot = RobotHardware.getInstance();
-    public static double delayTillSensor = 1000;
+    public static long delayTillSensor = 1000;
     Claw claw;
     GamepadEx gamepadEx;
 
@@ -49,7 +49,7 @@ public class ClawTest extends CommandOpMode {
 
         gamepadEx.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(new SequentialCommandGroup(
-                        new ClawCommand(claw, Claw.ClawState.CLOSED, ClawSide.BOTH)
+                        new ClawCommand(claw, Claw.ClawState.CLOSED, ClawSide.BOTH).withTimeout(delayTillSensor)
                        // new WaitCommand((long)delayTillSensor)
                 ));
 

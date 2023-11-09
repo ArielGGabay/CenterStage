@@ -13,19 +13,15 @@ import org.firstinspires.ftc.teamcode.util.wrappers.BetterSubsystem;
 import org.jetbrains.annotations.NotNull;
 
 @Config
-public class Claw extends BetterSubsystem
-{
+public class Claw extends BetterSubsystem {
     public static boolean auto = true;
     public static double delay = 135;
-    public static double laserDelay = 1000;
     private boolean useSensor; // Use this variable to specify whether to use the right sensor
 
     private final RobotHardware robot;
 
-    Timing.Timer timer;
 
-    public enum ClawState
-    {
+    public enum ClawState {
         CLOSED,
         INTERMEDIATE,
         OPEN
@@ -37,27 +33,19 @@ public class Claw extends BetterSubsystem
     public static double openLeft = 0.0, closeLeft = 0.1;
     public static double openRight = 0.0, closeRight = 0.1;
 
-    public Claw()
-    {
-        //timer = new Timing.Timer((long)laserDelay);
+    public Claw() {
         this.robot = RobotHardware.getInstance();
         updateState(ClawState.OPEN, ClawSide.BOTH);
-       // if(state == ClawState.OPEN)
-        {
-           // timer.start();
-        }
     }
 
     @Override
     public void periodic() {
 
-        if(rightClaw == Claw.ClawState.OPEN )
-        {
+        if (rightClaw == Claw.ClawState.OPEN) {
             checkAndClose(robot.breambeamRight, ClawSide.RIGHT);
         }
 
-        if(leftClaw == Claw.ClawState.OPEN )
-        {
+        if (leftClaw == Claw.ClawState.OPEN) {
             checkAndClose(robot.breambeamLeft, ClawSide.LEFT);
         }
 
@@ -81,7 +69,7 @@ public class Claw extends BetterSubsystem
     public void updateState(@NotNull ClawState state, @NotNull ClawSide side) {
         double position = getClawStatePosition(state, side);
 
-        switch(side) {
+        switch (side) {
             case LEFT:
                 robot.clawLeftServo.setPosition(position);
                 this.leftClaw = state;
@@ -104,10 +92,8 @@ public class Claw extends BetterSubsystem
 
     }
 
-    private double getClawStatePosition(ClawState state, ClawSide side)
-    {
-        switch (side)
-        {
+    private double getClawStatePosition(ClawState state, ClawSide side) {
+        switch (side) {
             case LEFT:
                 switch (state) {
                     case CLOSED:
@@ -131,46 +117,31 @@ public class Claw extends BetterSubsystem
         }
     }
 
-    public void checkAndClose(DigitalChannel sensor, ClawSide side)
-    {
+    public void checkAndClose(DigitalChannel sensor, ClawSide side) {
 
-       // if(sensor.getState() && useSensor)
-        if(sensor.getState())
-        {
-            new SequentialCommandGroup(
-                    new WaitCommand((long)delay),
-                    new ClawCommand(this, Claw.ClawState.OPEN, side)).schedule();
-        }
-       // else if(useSensor)
-       else
-        {
+        if (sensor.getState()) {
             new SequentialCommandGroup(
                     new WaitCommand((long) delay),
-                    new ClawCommand(this, Claw.ClawState.CLOSED, side)).schedule();
+                    new ClawCommand(this, ClawState.CLOSED, side)).schedule();
         }
 
 
     }
 
-    public void checkAndOpen(DigitalChannel sensor, ClawSide side)
-    {
+    public void checkAndOpen(DigitalChannel sensor, ClawSide side) {
 
         // if(sensor.getState() && useSensor)
-        if(!sensor.getState())
-        {
+        if (!sensor.getState()) {
             new SequentialCommandGroup(
-                    new WaitCommand((long)delay),
-                    new ClawCommand(this, Claw.ClawState.OPEN, side),
-                    new WaitCommand((long)delay * 2)).schedule();
+                    new WaitCommand((long) delay),
+                    new ClawCommand(this, Claw.ClawState.OPEN, side)).schedule();
         }
         // else if(useSensor)
-        else
-        {
+        else {
             new SequentialCommandGroup(
                     new WaitCommand((long) delay),
                     new ClawCommand(this, Claw.ClawState.CLOSED, side)).schedule();
         }
-
 
 
     }
